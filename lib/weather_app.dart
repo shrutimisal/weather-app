@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class WeatherApp extends StatefulWidget {
   const WeatherApp({super.key});
@@ -21,10 +22,11 @@ class _WeatherAppState extends State<WeatherApp> {
 
   Future<Map<String, dynamic>> getCurrentWeather() async {
     try {
-      final res = await http.get(
-        Uri.parse(
-            'https://api.openweathermap.org/data/2.5/forecast?q=Mumbai&APPID=dfdb9477a83c5e0ad1661651ac3254e1'),
-      );
+      final apiKey = dotenv.env['key'];
+      final url = Uri.parse(
+          'https://api.openweathermap.org/data/2.5/forecast?q=Mumbai&APPID=$apiKey');
+
+      final res = await http.get(url);
       final data = jsonDecode(res.body);
       if (data['cod'] != '200') {
         throw 'An unexpected error occured';
